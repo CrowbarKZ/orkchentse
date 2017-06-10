@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ event.title }}</title>
+</head>
+<body>
+  {{ event.title }}
+  <br>
+  {{ event.text }}
+  <br>
+  <ul>
+  {% for choice in event.choices.all %}
+    <li>{{ choice.title }}</li>
+  {% endfor %}
+  </ul>
+</body>
+</html>
