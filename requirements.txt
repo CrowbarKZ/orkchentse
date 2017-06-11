@@ -2,3 +2,4 @@ Django==1.11.2
 psycopg2==2.7.1
 Pillow==4.1.1
 jsonfield==2.0.1
+parsimonious==0.7.0
