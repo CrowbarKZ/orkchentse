@@ -49,6 +49,10 @@ class OrkLangEvaluator(parsimonious.NodeVisitor):
     def __init__(self, grammar, context):
         self.grammar = grammar
         self.context = context
+        self.context.update({
+            'true': True,
+            'false': False,
+        })
 
     def visit_name(self, node, chidren):
         if node.text in self.context :
@@ -115,7 +119,7 @@ if __name__ == '__main__':
     grammar = OrkLangGrammar(GRAMMAR)
 
     context = {"name": "test.pdf",
-               "mime": 'asd',
+               "mime": 2,
                "from": "jim@example.com",
                "to": "myself@example.com",
                "attached": True,
