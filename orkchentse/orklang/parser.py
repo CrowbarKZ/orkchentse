@@ -9,26 +9,31 @@ import parsimonious
 
 GRAMMAR = r"""
     expr = space or space
+
     or = and more_or
     more_or = ( space "or" space and )*
     and = term more_and
     more_and = ( space "and" space term )*
     term = not / value
     not = "not" space value
+
     value = equals / lower / lower_or_equals / greater / greater_or_equals /
             bracketed / name
+
     bracketed = "(" space expr space ")"
 
-    lower = name space "<" space literal
-    lower_or_equals = name space "<=" space literal
-    greater = name space ">" space literal
-    greater_or_equals = name space ">=" space literal
-    equals = name space "=" space literal
+    lower = name space "<" space universal_literal
+    lower_or_equals = name space "<=" space universal_literal
+    greater = name space ">" space universal_literal
+    greater_or_equals = name space ">=" space universal_literal
+    equals = name space "=" space universal_literal
 
-    name = ~"[a-z]+"
+    name = ~"[a-z_]+"
+    universal_literal = literal / number
     literal = "'" chars "'"
     space = " "*
-    chars = ~"[^']*"
+    chars = ~"[a-zA-Z_]+"
+    number = ~"\d+"
 """
 
 
@@ -54,6 +59,9 @@ class OrkLangEvaluator(parsimonious.NodeVisitor):
 
     def visit_literal(self, node, children):
         return children[1]
+
+    def visit_number(self, node, children):
+        return int(node.text)
 
     def visit_chars(self, node, children):
         return node.text
@@ -102,12 +110,12 @@ class OrkLangEvaluator(parsimonious.NodeVisitor):
 
 if __name__ == '__main__':
     s = "has_item('sword') and stat('str') > 10 or not(roll_dice(10) < 5) or true"
-    s = "not(mime = 'asd')"
+    s = "mime = 'asd' or mime = 2"
 
     grammar = OrkLangGrammar(GRAMMAR)
 
     context = {"name": "test.pdf",
-               "mime": "application/pdf",
+               "mime": 'asd',
                "from": "jim@example.com",
                "to": "myself@example.com",
                "attached": True,
