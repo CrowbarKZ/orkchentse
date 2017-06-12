@@ -18,9 +18,10 @@ GRAMMAR = r"""
     not = "not" space value
 
     value = equals / lower / lower_or_equals / greater / greater_or_equals /
-            bracketed / name
+            function / bracketed / name
 
     bracketed = "(" space expr space ")"
+    function = name "(" universal_literal ")"
 
     lower = name space "<" space universal_literal
     lower_or_equals = name space "<=" space universal_literal
@@ -55,9 +56,8 @@ class OrkLangEvaluator(parsimonious.NodeVisitor):
         })
 
     def visit_name(self, node, chidren):
-        if node.text in self.context :
-            val = self.context[node.text]
-            return val
+        if node.text in self.context:
+            return self.context[node.text]
         else:
             raise SyntaxError(f'Unknown variable {node.text} at {node.start}')
 
@@ -106,6 +106,11 @@ class OrkLangEvaluator(parsimonious.NodeVisitor):
     def visit_bracketed(self, node, children):
         return children[2]
 
+    def visit_function(self, node, children):
+        f = children[0]
+        arg = children[2]
+        return f(arg)
+
     def generic_visit(self, node, children):
         if children:
             return children[-1]
@@ -115,16 +120,15 @@ class OrkLangEvaluator(parsimonious.NodeVisitor):
 if __name__ == '__main__':
     s = "has_item('sword') and stat('str') > 10 or not(roll_dice(10) < 5) or true"
     s = "mime = 'asd' or mime = 2"
+    s = "test_func(0) and mime = 2"
 
     grammar = OrkLangGrammar(GRAMMAR)
 
-    context = {"name": "test.pdf",
-               "mime": 2,
-               "from": "jim@example.com",
-               "to": "myself@example.com",
-               "attached": True,
-               "seen": False
-                }
+    def test_func(stuff):
+        return bool(stuff)
+
+    context = {"test_func": test_func,
+               "mime": 2}
 
     evaluator = OrkLangEvaluator(grammar, context)
     print(evaluator.parse(s))
