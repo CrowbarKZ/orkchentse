@@ -21,14 +21,15 @@ GRAMMAR = r"""
             function / bracketed / name
 
     bracketed = "(" space expr space ")"
+
+    lower = universal_name space "<" space universal_literal
+    lower_or_equals = universal_name space "<=" space universal_literal
+    greater = universal_name space ">" space universal_literal
+    greater_or_equals = universal_name space ">=" space universal_literal
+    equals = universal_name space "=" space universal_literal
+
+    universal_name = function / name
     function = name "(" universal_literal ")"
-
-    lower = name space "<" space universal_literal
-    lower_or_equals = name space "<=" space universal_literal
-    greater = name space ">" space universal_literal
-    greater_or_equals = name space ">=" space universal_literal
-    equals = name space "=" space universal_literal
-
     name = ~"[a-z_]+"
     universal_literal = literal / number
     literal = "'" chars "'"
@@ -117,15 +118,14 @@ class OrkLangEvaluator(parsimonious.NodeVisitor):
 
 
 if __name__ == '__main__':
-    s = "has_item('sword') and stat('str') > 10 or not(roll_dice(10) < 5) or true"
-
+    s = "has_item('sword') and stat('str') > 10 or not (roll_dice(10) < 5) or true"
     grammar = OrkLangGrammar(GRAMMAR)
 
     def has_item(item):
         return True
 
     def stat(stat):
-        return 12
+        return 11
 
     def roll_dice(dice):
         return dice
