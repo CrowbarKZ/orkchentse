@@ -116,19 +116,25 @@ class OrkLangEvaluator(parsimonious.NodeVisitor):
             return children[-1]
 
 
-
 if __name__ == '__main__':
     s = "has_item('sword') and stat('str') > 10 or not(roll_dice(10) < 5) or true"
-    s = "mime = 'asd' or mime = 2"
-    s = "test_func(0) and mime = 2"
 
     grammar = OrkLangGrammar(GRAMMAR)
 
-    def test_func(stuff):
-        return bool(stuff)
+    def has_item(item):
+        return True
 
-    context = {"test_func": test_func,
-               "mime": 2}
+    def stat(stat):
+        return 12
+
+    def roll_dice(dice):
+        return dice
+
+    context = {
+        "has_item": has_item,
+        "stat": stat,
+        "roll_dice": roll_dice,
+    }
 
     evaluator = OrkLangEvaluator(grammar, context)
     print(evaluator.parse(s))
