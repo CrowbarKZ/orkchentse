@@ -8,15 +8,17 @@ class Story(BaseModel):
     Represnts a story
     """
     title = models.CharField(max_length=255)
-    cover = models.ImageField(
-        max_length=1024,
-        upload_to='story_covers',
+    cover = models.ForeignKey(
+        'Picture',
+        on_delete=models.SET_NULL,
+        related_name='+',
         null=True,
         blank=True
     )
-    world_map = models.ImageField(
-        max_length=1024,
-        upload_to='world_maps',
+    world_map = models.ForeignKey(
+        'Picture',
+        on_delete=models.SET_NULL,
+        related_name='+',
         null=True,
         blank=True
     )
@@ -35,8 +37,13 @@ class Event(BaseModel):
     - Each event leads to another event based on choice and some stats
     """
     title = models.CharField(max_length=255)
-    picture = models.ImageField(max_length=1024, upload_to='story_pics',
-                                null=True, blank=True)
+    picture = models.ForeignKey(
+        'Picture',
+        on_delete=models.SET_NULL,
+        related_name='+',
+        null=True,
+        blank=True
+    )
 
     # location on the map
     x = models.IntegerField()

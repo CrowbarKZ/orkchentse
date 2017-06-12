@@ -1,17 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{{ event.title }}</title>
+  <title>{{ title }}</title>
 </head>
 <body>
-  {{ event.title }}
-  <br>
-  {{ event.text }}
-  <br>
-  <ul>
-  {% for choice in event.choices.all %}
-    <li>{{ choice.title }}</li>
-  {% endfor %}
-  </ul>
+  <div>
+    {{ title }}
+  </div>
+
+  {% if picture_url %}
+  <div>
+    <img src="{{ picture_url }}">
+  </div>
+  {% endif %}
+
+  <div>
+    {{ text }}
+  </div>
+
+  <div>
+    <ul>
+    {% for choice in choices %}
+      <li>
+        <a href="{{ choice.1 }}">{{ choice.0 }}</a>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+
 </body>
 </html>
